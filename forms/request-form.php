@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // $mail->Password   = 'vmxgpykbazkwakhg--';
         
         $mail->Username   = 'atlasleads@gmail.com';
-        $mail->Password   = 'iubemfjobpwhwhua';
+        $mail->Password   = 'iubemfjobpwhwhua--';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port       = 465;
 
