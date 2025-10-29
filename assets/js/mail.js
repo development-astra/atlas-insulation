@@ -1,9 +1,26 @@
 $(document).ready(function() {
-    $('#contactForm').on('submit', function(e) {
+    // Use class selector to handle both forms on the page
+    $('.contact-form').on('submit', function(e) {
         e.preventDefault();
         
+        // Find the reCAPTCHA widget within this specific form
+        var $form = $(this);
+        var $recaptcha = $form.find('.g-recaptcha');
+        
         // Get the reCAPTCHA response token
-        var recaptchaResponse = grecaptcha.getResponse();
+        // Note: If multiple reCAPTCHAs exist, we need to get the right one
+        // Since both use the same container class, we'll check all widgets
+        var recaptchaResponse = '';
+        var allWidgets = $('.g-recaptcha');
+        
+        // Find the widget ID for this form's reCAPTCHA
+        allWidgets.each(function(index) {
+            if ($.contains($form[0], this)) {
+                // This reCAPTCHA belongs to the form being submitted
+                recaptchaResponse = grecaptcha.getResponse(index);
+                return false; // Break the loop
+            }
+        });
         
         // Check if reCAPTCHA is completed
         if (recaptchaResponse.length === 0) {
@@ -42,8 +59,16 @@ $(document).ready(function() {
                 console.log('Status:', xhr.status);
                 console.log('Response:', xhr.responseText);
                 
-                // Reset reCAPTCHA on error so user can try again
-                grecaptcha.reset();
+                // Reset the reCAPTCHA for this form so user can try again
+                var $recaptcha = $form.find('.g-recaptcha');
+                var allWidgets = $('.g-recaptcha');
+                
+                allWidgets.each(function(index) {
+                    if ($.contains($form[0], this)) {
+                        grecaptcha.reset(index);
+                        return false; // Break the loop
+                    }
+                });
                 
                 window.location.href = 'form-error.html';
             }
